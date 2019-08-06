@@ -45,6 +45,8 @@ describe('getNextUniqueId', () => {
   it('should give the next id based on the count in the file', (done) => {
     fs.writeFileSync(counter.counterFile, '00025');
     counter.getNextUniqueId((err, id) => {
+      // console.log('id',id);
+      // counter.readCounter((data) =>{console.log(data)})
       expect(id).to.equal('00026');
       done();
     });
@@ -121,6 +123,7 @@ describe('todos', () => {
       const todo2text = 'todo 2';
       const expectedTodoList = [{ id: '00001', text: '00001' }, { id: '00002', text: '00002' }];
       todos.create(todo1text, (err, todo) => {
+        console.log(todo.text)
         todos.create(todo2text, (err, todo) => {
           todos.readAll((err, todoList) => {
             expect(todoList).to.have.lengthOf(2);
