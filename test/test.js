@@ -121,9 +121,8 @@ describe('todos', () => {
     it('should return an array with all saved todos', (done) => {
       const todo1text = 'todo 1';
       const todo2text = 'todo 2';
-      const expectedTodoList = [{ id: '00001', text: 'love me' }, { id: '00002', text: 'so good' }];
+      const expectedTodoList = [{ id: '00001', text: todo1text }, { id: '00002', text: todo2text }];
       todos.create(todo1text, (err, todo) => {
-        console.log(todo.text)
         todos.create(todo2text, (err, todo) => {
           todos.readAll((err, todoList) => {
             expect(todoList).to.have.lengthOf(2);

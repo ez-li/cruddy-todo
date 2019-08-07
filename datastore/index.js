@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
-const Promises = require('bluebird');
-Promises.promisify(fs);
+const Promise = require('bluebird');
+Promise.promisifyAll(fs);
 
 exports.items = {};
 
@@ -39,7 +39,29 @@ exports.create = (text, callback) => {
 //   });
 
 // }
-
+exports.readAll = function(callback) {
+  return fs.readdirAsync(exports.dataDir)
+    .then((files) => {
+      var promises = _.map(files, (file) => {
+        return fs.readFileAsync(`${exports.dataDir}/${file}`, 'utf8')
+          .then((text) => {
+            file = file.slice(0,5);
+            var obj = {id: file, text: text};
+            console.log(obj);
+            return obj;
+          })
+      })
+      return promises;
+    })
+    .then((promiseArray)=> {
+      console.log('hi', promiseArray);
+      // callback(Promise.all(promiseArray));
+      return Promise.all(promiseArray)
+    })
+    .then((output) => {
+      return callback(null, output);
+    })
+}
 
 // return fs.readdirAsync(exports.dataDir)
 //   .then(function(files) {
@@ -63,18 +85,18 @@ exports.create = (text, callback) => {
 // .then readFile (filepath with the filename / id)
 // input is the id
 
-exports.readAll = (callback) => {
-  fs.readdir(exports.dataDir, (err, files) => {
-    var outPut = _.map(files, (value) => {
-        return {
-          id: value.slice(0,5),
-          text: value.slice(0,5)
-        }
-    })
-    callback(null, outPut);
-  });
+// exports.readAll = (callback) => {
+//   fs.readdir(exports.dataDir, (err, files) => {
+//     var outPut = _.map(files, (value) => {
+//         return {
+//           id: value.slice(0,5),
+//           text: value.slice(0,5)
+//         }
+//     })
+//     callback(null, outPut);
+//   });
 
-};
+// };
 
 // var readAllAsync = Promise.promisify(exports.readAll);
 
