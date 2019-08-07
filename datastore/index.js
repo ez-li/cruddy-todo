@@ -2,8 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const Promises = require('bluebird');
+Promises.promisify(fs);
 
 exports.items = {};
+
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
@@ -24,17 +27,56 @@ exports.create = (text, callback) => {
   });
 };
 
+
+
+// exports.readAll = function() {
+//   var files = [];
+//   for (var i = 0; i < 100; ++i) {
+//       files.push(fs.writeFileAsync("file-" + i + ".txt", "", "utf-8"));
+//   }
+//   Promise.all(files).then(function() {
+//       // object with individual id and text for each file;
+//   });
+
+// }
+
+
+// return fs.readdirAsync(exports.dataDir)
+//   .then(function(files) {
+//      var output = _.map(files, (value) => {
+//       var id = value.slice(0,5);
+//       return id;
+//     })
+//     return output;
+//   })
+//   .then(function(output) {
+//     var idArray = _.map(output, (id) => {
+//       fs.readFileAsync(`${exports.dataDir}/${id}.txt`)
+//         return {
+//           id: id,
+//           text: data
+//         }
+//     })
+//     return idArray
+//   })
+//   .then(function)
+// .then readFile (filepath with the filename / id)
+// input is the id
+
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, files) => {
     var outPut = _.map(files, (value) => {
         return {
-          id:value.slice(0,5),
-          text:value.slice(0,5)
+          id: value.slice(0,5),
+          text: value.slice(0,5)
         }
     })
     callback(null, outPut);
   });
+
 };
+
+// var readAllAsync = Promise.promisify(exports.readAll);
 
 exports.readOne = (id, callback) => {
   fs.readFile(`${exports.dataDir}/${id}.txt`, (err,fileData) => {
